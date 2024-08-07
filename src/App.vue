@@ -2,7 +2,6 @@
 import axios from "axios";
 import { ref } from "vue";
 
-const res = ref("res初期値");
 const input = ref(
   "https://www.reddit.com/r/OsakaTravel/comments/1e8na56/is_this_area_safe/"
 );
@@ -20,8 +19,6 @@ async function getUrl() {
   out.comments.forEach((comment) => {
     items.value.push([comment.body, comment.bodyjp]);
   });
-
-  res.value = items.value;
 }
 
 async function matome(url) {
@@ -91,7 +88,10 @@ const extractCommentsAndReplies = (child, comments) => {
     <p>以下vue単一コンポーネント</p>
     <input type="text" v-model.lazy="input" />
     <button @click="getUrl">Click</button>
-    <p>{{ res }}</p>
+    <li v-for="item in items">
+      {{ item[0] }}
+      {{ item[1] }}
+    </li>
   </div>
 </template>
 
