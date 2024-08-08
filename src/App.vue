@@ -6,18 +6,29 @@ const input = ref(
   "https://www.reddit.com/r/OsakaTravel/comments/1e8na56/is_this_area_safe/"
 );
 const items = ref([]);
+const toridasiItems = ref(["初期値"]);
+
+function toridasi() {
+  toridasiItems.value = [];
+  for (let i = 0; i < items.value.length; i++) {
+    if (items.value[i][0] == true) {
+      toridasiItems.value.push(items.value[i]);
+    }
+  }
+}
 
 async function getUrl() {
+  items.value = [];
   let url = input.value;
 
   let out = await matome(url);
 
   items.value.push(
-    [out.title.body, out.title.bodyjp],
-    [out.title.selftext, out.title.selftestjp]
+    [false, out.title.body, out.title.bodyjp],
+    [false, out.title.selftext, out.title.selftestjp]
   );
   out.comments.forEach((comment) => {
-    items.value.push([comment.body, comment.bodyjp]);
+    items.value.push([false, comment.body, comment.bodyjp]);
   });
 }
 
@@ -89,9 +100,12 @@ const extractCommentsAndReplies = (child, comments) => {
     <input type="text" v-model.lazy="input" />
     <button @click="getUrl">Click</button>
     <li v-for="item in items">
-      {{ item[0] }}
+      <input type="checkbox" v-model="item[0]" />
       {{ item[1] }}
+      {{ item[2] }}
     </li>
+    <button @click="toridasi">抽出</button>
+    <p>{{ toridasiItems }}</p>
   </div>
 </template>
 
